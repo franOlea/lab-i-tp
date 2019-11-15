@@ -1,5 +1,6 @@
-package edu.palermo.lab.i.user.doctor;
+package edu.palermo.lab.i.user.doctor.persistence;
 
+import edu.palermo.lab.i.user.doctor.DoctorDto;
 import lombok.NonNull;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package edu.palermo.lab.i.user.doctor.in.memory;
+package edu.palermo.lab.i.user.doctor.persistence.in.memory;
 
 import edu.palermo.lab.i.user.doctor.DoctorDto;
-import edu.palermo.lab.i.user.doctor.DoctorMetadataDao;
+import edu.palermo.lab.i.user.doctor.persistence.DoctorMetadataDao;
 import lombok.NonNull;
 
 import java.util.LinkedList;
