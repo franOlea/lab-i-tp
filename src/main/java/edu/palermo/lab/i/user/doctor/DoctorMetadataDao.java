@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface DoctorMetadataDao {
 
-  List<DoctorMetadataDto> getAll();
-  void save(@NonNull final DoctorMetadataDto metadata);
-  Optional<DoctorMetadataDto> getDoctorMetadata(@NonNull final String doctorId);
+  List<DoctorDto> getAll();
+  void save(@NonNull final DoctorDto metadata);
+  Optional<DoctorDto> getDoctorMetadata(@NonNull final String doctorId);
 
 }

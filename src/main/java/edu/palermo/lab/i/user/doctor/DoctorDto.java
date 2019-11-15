@@ -1,5 +1,6 @@
 package edu.palermo.lab.i.user.doctor;
 
+import edu.palermo.lab.i.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,16 +14,16 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorMetadataDto {
-  private String userId;
+public class DoctorDto {
+  private UserDto userDto;
   private Float hourlyFee;
 
   /**
    * Method used for ease of development with in memory implementation of persistence. To be removed on release.
    */
-  public DoctorMetadataDto copy() {
+  public DoctorDto copy() {
     //noinspection BoxingBoxedValue
-    return new DoctorMetadataDto(userId, Float.valueOf(this.hourlyFee));
+    return new DoctorDto(userDto.copy(), Float.valueOf(this.hourlyFee));
   }
 
 }

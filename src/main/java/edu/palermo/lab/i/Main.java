@@ -23,13 +23,7 @@ public class Main {
 
     UserDao userDao = new H2UserDao(connection, new H2UserMapper());
 
-    UserDto userDto = new UserDto();
-    userDto.setPassword("admin");
-    userDto.setFirstName("nombre");
-    userDto.setLastName("apellido");
-    userDto.setId("admin");
-    userDto.setRole(Role.ADMIN);
-    userDao.save(userDto);
+    addTestUser(userDao);
 
     JFrame frame = new JFrame("Turnera Medica");
     frame.pack();
@@ -46,6 +40,16 @@ public class Main {
   @SneakyThrows
   private static void initializeH2Tables(final Connection connection) {
     H2DBInitializer.initializeTables(connection);
+  }
+
+  private static void addTestUser(final UserDao userDao) {
+    UserDto userDto = new UserDto();
+    userDto.setPassword("admin");
+    userDto.setFirstName("nombre");
+    userDto.setLastName("apellido");
+    userDto.setId("admin");
+    userDto.setRole(Role.ADMIN);
+    userDao.save(userDto);
   }
 
 }

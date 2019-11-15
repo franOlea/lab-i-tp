@@ -1,6 +1,6 @@
 package edu.palermo.lab.i.user.doctor.in.memory;
 
-import edu.palermo.lab.i.user.doctor.DoctorMetadataDto;
+import edu.palermo.lab.i.user.doctor.DoctorDto;
 import edu.palermo.lab.i.user.doctor.DoctorMetadataDao;
 import lombok.NonNull;
 
@@ -11,22 +11,22 @@ import java.util.stream.Collectors;
 
 public class InMemoryDoctorMetadataDao implements DoctorMetadataDao {
 
-  private final List<DoctorMetadataDto> doctors = new LinkedList<>();
+  private final List<DoctorDto> doctors = new LinkedList<>();
 
   @Override
-  public List<DoctorMetadataDto> getAll() {
+  public List<DoctorDto> getAll() {
     return doctors.stream()
-        .map(DoctorMetadataDto::copy)
+        .map(DoctorDto::copy)
         .collect(Collectors.toList());
   }
 
   @Override
-  public void save(@NonNull final DoctorMetadataDto metadata) {
-    Optional<DoctorMetadataDto> potentialExistingDoctor = doctors.stream()
-        .filter(savedDoctor -> savedDoctor.getUserId().equals(metadata.getUserId()))
+  public void save(@NonNull final DoctorDto metadata) {
+    Optional<DoctorDto> potentialExistingDoctor = doctors.stream()
+        .filter(savedDoctor -> savedDoctor.getUserDto().equals(metadata.getUserDto()))
         .findFirst();
     if(potentialExistingDoctor.isPresent()) {
-      DoctorMetadataDto savedDoctor = potentialExistingDoctor.get();
+      DoctorDto savedDoctor = potentialExistingDoctor.get();
       savedDoctor.setHourlyFee(metadata.getHourlyFee());
     } else {
       doctors.add(metadata);
@@ -34,11 +34,11 @@ public class InMemoryDoctorMetadataDao implements DoctorMetadataDao {
   }
 
   @Override
-  public Optional<DoctorMetadataDto> getDoctorMetadata(@NonNull final String doctorId) {
+  public Optional<DoctorDto> getDoctorMetadata(@NonNull final String doctorId) {
     return doctors.stream()
-        .filter(savedDoctor -> savedDoctor.getUserId().equals(doctorId))
+        .filter(savedDoctor -> savedDoctor.getUserDto().getId().equals(doctorId))
         .findFirst()
-        .map(DoctorMetadataDto::copy);
+        .map(DoctorDto::copy);
   }
 
 }

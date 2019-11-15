@@ -44,7 +44,7 @@ public class UserTableModel extends AbstractTableModel {
     } else if(columnIndex == ENABLED_COL_INDEX) {
       return user.getEnabled().toString();
     } else {
-      return "";
+      throw new IllegalArgumentException(String.format("The column index is invalid [%s].", columnIndex));
     }
   }
 
