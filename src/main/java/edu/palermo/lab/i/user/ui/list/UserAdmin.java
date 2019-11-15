@@ -1,10 +1,10 @@
 package edu.palermo.lab.i.user.ui.list;
 
-import edu.palermo.lab.i.user.UserDto;
 import edu.palermo.lab.i.ManagedPanel;
 import edu.palermo.lab.i.ScreenManager;
-import edu.palermo.lab.i.user.ui.edit.UserEdit;
+import edu.palermo.lab.i.user.UserDto;
 import edu.palermo.lab.i.user.persistence.UserDao;
+import edu.palermo.lab.i.user.ui.edit.UserEdit;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

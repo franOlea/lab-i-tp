@@ -1,9 +1,9 @@
 package edu.palermo.lab.i.user.ui.edit;
 
-import edu.palermo.lab.i.user.Role;
-import edu.palermo.lab.i.user.UserDto;
 import edu.palermo.lab.i.ManagedPanel;
 import edu.palermo.lab.i.ScreenManager;
+import edu.palermo.lab.i.user.Role;
+import edu.palermo.lab.i.user.UserDto;
 import edu.palermo.lab.i.user.persistence.UserDao;
 
 import javax.swing.*;

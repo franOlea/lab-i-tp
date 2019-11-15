@@ -36,7 +36,7 @@ public class Main {
     frame.setVisible(true);
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-    ScreenManager screenManager = new ScreenManager(frame);
+    ScreenManager screenManager = new HistoricScreenManager(frame);
 
     UserAdmin userEditForm = new UserAdmin(screenManager, userDao);
     screenManager.switchTo(userEditForm);
