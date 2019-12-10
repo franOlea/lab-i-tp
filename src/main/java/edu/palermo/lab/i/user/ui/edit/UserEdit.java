@@ -8,6 +8,8 @@ import edu.palermo.lab.i.user.persistence.UserDao;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class UserEdit extends ManagedPanel {
 
@@ -23,7 +25,7 @@ public class UserEdit extends ManagedPanel {
 
   @Override
   protected void doInitialize() {
-    this.setLayout(new GridLayout(7,2));
+    this.setLayout(new GridLayout(8,2));
 
     JLabel idLabel = new JLabel("Id:");
     JTextField idField = new JTextField();
@@ -32,43 +34,54 @@ public class UserEdit extends ManagedPanel {
       idField.setEnabled(false);
       create = false;
     }
-    this.add(idLabel);
-    this.add(idField);
 
     JLabel firstNameLabel = new JLabel("Nombre:");
     JTextField firstNameField = new JTextField();
     firstNameField.setText(userDto.getFirstName());
-    this.add(firstNameLabel);
-    this.add(firstNameField);
 
     JLabel lastNameLabel = new JLabel("Apellido:");
     JTextField lastNameField = new JTextField();
     lastNameField.setText(userDto.getLastName());
-    this.add(lastNameLabel);
-    this.add(lastNameField);
 
     JLabel passwordLabel = new JLabel("Contraseña:");
     JPasswordField passwordField = new JPasswordField();
     passwordField.setText(userDto.getPassword());
-    this.add(passwordLabel);
-    this.add(passwordField);
+
+    JLabel doctorFeeLabel = new JLabel("Honorarios por hora:");
+    JTextField doctorFeeField = new JTextField();
+    if(userDto.getRole().equals(Role.DOCTOR)) {
+      doctorFeeField.setText(userDto.getHourlyFee().toString());
+      doctorFeeField.setEditable(true);
+    } else {
+      doctorFeeField.setEditable(false);
+    }
+    doctorFeeField.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent event) {
+        String value = doctorFeeField.getText();
+        doctorFeeField.setText(value.replace("[^0-9]", ""));
+      }
+    });
 
     JLabel roleLabel = new JLabel("Rol:");
     JComboBox<Role> roleField = new JComboBox<>(Role.values());
     roleField.setSelectedItem(userDto.getRole());
-    this.add(roleLabel);
-    this.add(roleField);
+    roleField.addItemListener(itemListener -> {
+      Role selectedRole = (Role) itemListener.getItem();
+      if(selectedRole == Role.DOCTOR) {
+        doctorFeeField.setEditable(true);
+      } else {
+        doctorFeeField.setText("");
+        doctorFeeField.setEditable(false);
+      }
+    });
 
     JLabel enabledLabel = new JLabel("Habilitado");
     JCheckBox enabledCheckBox = new JCheckBox();
     enabledCheckBox.setSelected(userDto.getEnabled());
-    this.add(enabledLabel);
-    this.add(enabledCheckBox);
 
     JButton saveButton = new JButton("Guardar");
     JButton cancelButton = new JButton("Cancelar");
-    this.add(saveButton);
-    this.add(cancelButton);
 
     saveButton.addActionListener(action -> {
       if(idField.getText().isEmpty() || passwordField.getPassword().length == 0) {
@@ -91,6 +104,9 @@ public class UserEdit extends ManagedPanel {
       userDto.setPassword(new String(passwordField.getPassword()));
       userDto.setRole((Role) roleField.getSelectedItem());
       userDto.setEnabled(enabledCheckBox.isSelected());
+      if(userDto.getRole().equals(Role.DOCTOR)) {
+        userDto.setHourlyFee(Float.valueOf(doctorFeeField.getText()));
+      }
 
       if(create && userDao.getById(userDto.getId()).isPresent()) {
         JOptionPane.showMessageDialog(this,
@@ -103,6 +119,23 @@ public class UserEdit extends ManagedPanel {
       screenManager.goBack();
     });
     cancelButton.addActionListener(event -> screenManager.goBack());
+
+    this.add(idLabel);
+    this.add(idField);
+    this.add(firstNameLabel);
+    this.add(firstNameField);
+    this.add(lastNameLabel);
+    this.add(lastNameField);
+    this.add(passwordLabel);
+    this.add(passwordField);
+    this.add(roleLabel);
+    this.add(roleField);
+    this.add(enabledLabel);
+    this.add(enabledCheckBox);
+    this.add(doctorFeeLabel);
+    this.add(doctorFeeField);
+    this.add(saveButton);
+    this.add(cancelButton);
   }
 
 }

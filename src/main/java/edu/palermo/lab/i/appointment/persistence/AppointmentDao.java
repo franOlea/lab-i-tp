@@ -1,5 +1,6 @@
-package edu.palermo.lab.i.appointment;
+package edu.palermo.lab.i.appointment.persistence;
 
+import edu.palermo.lab.i.appointment.AppointmentDto;
 import lombok.NonNull;
 
 import java.util.List;

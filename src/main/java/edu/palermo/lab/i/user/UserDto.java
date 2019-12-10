@@ -19,6 +19,7 @@ public class UserDto {
   private String firstName;
   private String lastName;
   private Role role = Role.USER;
+  private Float hourlyFee = 0f;
   private Boolean enabled = true;
 
   /**
@@ -32,6 +33,7 @@ public class UserDto {
         this.getFirstName(),
         this.getLastName(),
         this.role,
+        Float.valueOf(this.hourlyFee),
         Boolean.valueOf(this.getEnabled()));
   }
 }

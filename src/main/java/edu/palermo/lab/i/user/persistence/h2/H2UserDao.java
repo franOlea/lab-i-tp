@@ -1,5 +1,6 @@
 package edu.palermo.lab.i.user.persistence.h2;
 
+import edu.palermo.lab.i.user.Role;
 import edu.palermo.lab.i.user.UserDto;
 import edu.palermo.lab.i.user.persistence.UserDao;
 import lombok.NonNull;
@@ -14,14 +15,15 @@ import java.util.Optional;
 @SuppressWarnings({"SqlDialectInspection", "SqlNoDataSourceInspection"})
 public class H2UserDao implements UserDao {
 
-  private static final String QUERY_ALL = "select `user`, `firstName`, `lastName`, `enabled`, `password` from `users`";
+  private static final String QUERY_ALL = "select `user`, `firstName`, `lastName`, `enabled`, `password`, `role`, `hourly_fee` from `users`";
   private static final String ENABLED_TRUE = "`enabled` = 'true'";
-  private static final String QUERY_ALL_ENABLED = QUERY_ALL + " where " + ENABLED_TRUE;
+  private static final String QUERY_ALL_ENABLED = QUERY_ALL + " where " + ENABLED_TRUE + " and `role` = ?";
   private static final String QUERY_BY_ID = QUERY_ALL + " where `user` = ?";
   private static final String QUERY_BY_LOGIN = QUERY_BY_ID + " and `password` = ? and " + ENABLED_TRUE;
   private static final String INSERT_DOCTOR = "insert into `users` " +
-      "(`user`, `password`, `firstName`, `lastName`, `enabled`) values (?, ?, ?, ?, 'true') " +
-      "on duplicate key update `firstName` = values(`firstName`), `lastName` = values(`lastName`), `enabled` = values(`enabled`)";
+      "(`user`, `password`, `firstName`, `lastName`, `role`, `hourly_fee`, `enabled`) values (?, ?, ?, ?, ?, ?, 'true') " +
+      "on duplicate key update `firstName` = values(`firstName`), `lastName` = values(`lastName`), " +
+      "`enabled` = values(`enabled`), `role` = values(`role`), `hourly_fee` = values(`hourly_fee`)";
 
   private final Connection connection;
   private final H2UserMapper mapper;
@@ -57,9 +59,14 @@ public class H2UserDao implements UserDao {
     return getList(QUERY_ALL);
   }
 
+  @SneakyThrows
   @Override
-  public List<UserDto> getAllEnabled() {
-    return getList(QUERY_ALL_ENABLED);
+  public List<UserDto> getAllEnabledByRole(@NonNull final Role role) {
+    try(PreparedStatement statement = connection.prepareStatement(QUERY_ALL_ENABLED)) {
+      statement.setString(1, role.name());
+      ResultSet resultSet = statement.executeQuery();
+      return mapper.map(resultSet);
+    }
   }
 
   @SneakyThrows
@@ -71,6 +78,8 @@ public class H2UserDao implements UserDao {
       statement.setString(2, userDto.getPassword());
       statement.setString(3, userDto.getFirstName());
       statement.setString(4, userDto.getLastName());
+      statement.setString(5, userDto.getRole().name());
+      statement.setFloat(6, userDto.getHourlyFee());
       statement.executeUpdate();
     }
   }

@@ -50,11 +50,11 @@ public class Main {
     adminDto.setId("admin");
     adminDto.setRole(Role.ADMIN);
     UserDto doctorDto = new UserDto();
-    adminDto.setPassword("doc");
-    adminDto.setFirstName("Paquita");
-    adminDto.setLastName("Navajas");
-    adminDto.setId("doc");
-    adminDto.setRole(Role.DOCTOR);
+    doctorDto.setPassword("doc");
+    doctorDto.setFirstName("Paquita");
+    doctorDto.setLastName("Navajas");
+    doctorDto.setId("doc");
+    doctorDto.setRole(Role.DOCTOR);
 
     userDao.save(userDto);
     userDao.save(adminDto);

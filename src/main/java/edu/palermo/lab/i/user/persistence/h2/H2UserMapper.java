@@ -1,5 +1,6 @@
 package edu.palermo.lab.i.user.persistence.h2;
 
+import edu.palermo.lab.i.user.Role;
 import edu.palermo.lab.i.user.UserDto;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -20,6 +21,8 @@ public class H2UserMapper {
       user.setLastName(resultSet.getString("lastName"));
       user.setEnabled(resultSet.getBoolean("enabled"));
       user.setPassword(resultSet.getString("password"));
+      user.setHourlyFee(resultSet.getFloat("hourly_fee"));
+      user.setRole(Role.valueOf(resultSet.getString("role")));
       doctors.add(user);
     }
     return doctors;

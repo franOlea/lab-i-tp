@@ -1,6 +1,6 @@
-package edu.palermo.lab.i.appointment.in.memory;
+package edu.palermo.lab.i.appointment.persistence.in.memory;
 
-import edu.palermo.lab.i.appointment.AppointmentDao;
+import edu.palermo.lab.i.appointment.persistence.AppointmentDao;
 import edu.palermo.lab.i.appointment.AppointmentDto;
 import lombok.NonNull;
 

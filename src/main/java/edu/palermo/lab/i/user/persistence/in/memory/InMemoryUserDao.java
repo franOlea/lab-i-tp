@@ -1,5 +1,6 @@
 package edu.palermo.lab.i.user.persistence.in.memory;
 
+import edu.palermo.lab.i.user.Role;
 import edu.palermo.lab.i.user.persistence.UserDao;
 import edu.palermo.lab.i.user.UserDto;
 import lombok.NonNull;
@@ -37,9 +38,9 @@ public class InMemoryUserDao implements UserDao {
   }
 
   @Override
-  public List<UserDto> getAllEnabled() {
+  public List<UserDto> getAllEnabledByRole(@NonNull final Role role) {
     return users.stream()
-        .filter(UserDto::getEnabled)
+        .filter(userDto -> userDto.getEnabled() && userDto.getRole().equals(role))
         .map(UserDto::copy)
         .collect(Collectors.toList());
   }

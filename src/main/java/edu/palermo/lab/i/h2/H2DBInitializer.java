@@ -12,6 +12,8 @@ public class H2DBInitializer {
       "\t`firstName` VARCHAR(255),\n" +
       "\t`lastName` VARCHAR(255),\n" +
       "\t`enabled` BOOLEAN NOT NULL,\n" +
+      "\t`role` VARCHAR(255) NOT NULL,\n" +
+      "\t`hourly_fee` FLOAT NOT NULL,\n" +
       "\tPRIMARY KEY (`user`)\n" +
       ");";
 

@@ -1,5 +1,6 @@
 package edu.palermo.lab.i.user.persistence;
 
+import edu.palermo.lab.i.user.Role;
 import edu.palermo.lab.i.user.UserDto;
 import lombok.NonNull;
 
@@ -11,7 +12,7 @@ public interface UserDao {
   Optional<UserDto> getByLogin(@NonNull final String user, @NonNull final String password);
   Optional<UserDto> getById(@NonNull final String user);
   List<UserDto> getAll();
-  List<UserDto> getAllEnabled();
+  List<UserDto> getAllEnabledByRole(final Role role);
   void save(@NonNull final UserDto userDto);
 
 }
