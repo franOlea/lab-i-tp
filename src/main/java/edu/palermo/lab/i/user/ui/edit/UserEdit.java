@@ -52,8 +52,10 @@ public class UserEdit extends ManagedPanel {
     if(userDto.getRole().equals(Role.DOCTOR)) {
       doctorFeeField.setText(userDto.getHourlyFee().toString());
       doctorFeeField.setEditable(true);
+      doctorFeeField.setVisible(true);
     } else {
       doctorFeeField.setEditable(false);
+      doctorFeeField.setVisible(false);
     }
     doctorFeeField.addKeyListener(new KeyAdapter() {
       @Override
@@ -69,10 +71,17 @@ public class UserEdit extends ManagedPanel {
     roleField.addItemListener(itemListener -> {
       Role selectedRole = (Role) itemListener.getItem();
       if(selectedRole == Role.DOCTOR) {
+        if(create) {
+          doctorFeeField.setText("0");
+        } else {
+          Float hourlyFee = userDto.getHourlyFee();
+          doctorFeeField.setText(hourlyFee == null ? "0" : hourlyFee.toString());
+        }
         doctorFeeField.setEditable(true);
+        doctorFeeField.setVisible(true);
       } else {
-        doctorFeeField.setText("");
         doctorFeeField.setEditable(false);
+        doctorFeeField.setVisible(false);
       }
     });
 
@@ -105,6 +114,9 @@ public class UserEdit extends ManagedPanel {
       userDto.setRole((Role) roleField.getSelectedItem());
       userDto.setEnabled(enabledCheckBox.isSelected());
       if(userDto.getRole().equals(Role.DOCTOR)) {
+        if(doctorFeeField.getText().isEmpty()) {
+          doctorFeeField.setText("0");
+        }
         userDto.setHourlyFee(Float.valueOf(doctorFeeField.getText()));
       }
 

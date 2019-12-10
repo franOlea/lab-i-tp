@@ -36,16 +36,16 @@ public class UserLogin extends ManagedPanel {
     form.add(passwordField);
 
     JButton loginButton = new JButton("Ingresar");
-    loginButton.addActionListener(loginButtonListener(userField.getText(), new String(passwordField.getPassword())));
+    loginButton.addActionListener(loginButtonListener(userField, passwordField));
 
 
     this.add(form);
     this.add(loginButton);
   }
 
-  private ActionListener loginButtonListener(final String user, final String password) {
+  private ActionListener loginButtonListener(final JTextField userField, final JPasswordField passwordField) {
     return listener -> {
-      Optional<UserDto> possibleUser = userDao.getByLogin(user, password);
+      Optional<UserDto> possibleUser = userDao.getByLogin(userField.getText(), new String(passwordField.getPassword()));
       if(possibleUser.isPresent()) {
         SecurityContext.getInstance().setCurrentUser(possibleUser.get());
         screenManager.switchToDefault();

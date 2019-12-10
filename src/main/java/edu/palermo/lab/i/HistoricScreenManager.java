@@ -63,10 +63,10 @@ public class HistoricScreenManager implements ScreenManager {
 
   private void doSwitch(@NonNull final ManagedPanel panel) {
     frame.getContentPane().removeAll();
+    panel.initialize();
     frame.getContentPane().add(panel);
     frame.getContentPane().validate();
     frame.getContentPane().repaint();
-    panel.initialize();
   }
 
 }
