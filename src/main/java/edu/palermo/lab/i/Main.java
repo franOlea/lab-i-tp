@@ -1,5 +1,7 @@
 package edu.palermo.lab.i;
 
+import edu.palermo.lab.i.appointment.persistence.in.memory.InMemoryAppointmentDao;
+import edu.palermo.lab.i.appointment.ui.AppointmentCreator;
 import edu.palermo.lab.i.h2.H2ConnectionFactory;
 import edu.palermo.lab.i.h2.H2DBInitializer;
 import edu.palermo.lab.i.user.Role;
@@ -24,7 +26,8 @@ public class Main {
     JFrame frame = createFrame();
     ManagedPanelFactory managedPanelFactory = new ManagedPanelFactory(userDao);
     ScreenManager screenManager = new HistoricScreenManager(managedPanelFactory, frame);
-    screenManager.switchTo(managedPanelFactory.createUserLogin(screenManager));
+//    screenManager.switchTo(managedPanelFactory.createUserLogin(screenManager));
+    screenManager.switchTo(new AppointmentCreator(screenManager, new InMemoryAppointmentDao(), userDao));
   }
 
   private static JFrame createFrame() {
@@ -54,6 +57,7 @@ public class Main {
     doctorDto.setFirstName("Paquita");
     doctorDto.setLastName("Navajas");
     doctorDto.setId("doc");
+    doctorDto.setHourlyFee(123.4f);
     doctorDto.setRole(Role.DOCTOR);
 
     userDao.save(userDto);
