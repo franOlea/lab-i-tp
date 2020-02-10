@@ -17,4 +17,8 @@ public abstract class ManagedPanel extends JPanel {
 
   protected abstract void doInitialize();
 
+  protected void goBack() {
+    screenManager.goBack();
+  }
+
 }
