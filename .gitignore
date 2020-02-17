@@ -36,3 +36,5 @@ env/
 
 # Docker
 docker/mysql/*.sql
+
+push.txt

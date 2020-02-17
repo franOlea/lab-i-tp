@@ -1,5 +1,6 @@
 package edu.palermo.lab.i;
 
+import edu.palermo.lab.i.appointment.persistence.AppointmentDao;
 import edu.palermo.lab.i.appointment.persistence.in.memory.InMemoryAppointmentDao;
 import edu.palermo.lab.i.appointment.ui.AppointmentCreator;
 import edu.palermo.lab.i.h2.H2ConnectionFactory;
@@ -22,12 +23,20 @@ public class Main {
     Connection connection = h2ConnectionFactory.create();
     initializeH2Tables(connection);
     UserDao userDao = new H2UserDao(connection, new H2UserMapper());
+    AppointmentDao appointmentDao = new InMemoryAppointmentDao();
     initializeUsers(userDao);
     JFrame frame = createFrame();
-    ManagedPanelFactory managedPanelFactory = new ManagedPanelFactory(userDao);
+    ManagedPanelFactory managedPanelFactory = new ManagedPanelFactory(userDao, appointmentDao);
     ScreenManager screenManager = new HistoricScreenManager(managedPanelFactory, frame);
-//    screenManager.switchTo(managedPanelFactory.createUserLogin(screenManager));
-    screenManager.switchTo(new AppointmentCreator(screenManager, new InMemoryAppointmentDao(), userDao));
+    UserDto userDto = new UserDto();
+    userDto.setPassword("user");
+    userDto.setFirstName("Juan");
+    userDto.setLastName("Perez");
+    userDto.setId("user");
+    userDto.setRole(Role.USER);
+    SecurityContext.getInstance().setCurrentUser(userDto);
+    screenManager.switchToDefault();
+//    screenManager.switchTo(new AppointmentCreator(screenManager, new InMemoryAppointmentDao(), userDao));
   }
 
   private static JFrame createFrame() {

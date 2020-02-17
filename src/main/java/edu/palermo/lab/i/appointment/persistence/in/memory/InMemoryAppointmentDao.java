@@ -1,25 +1,29 @@
 package edu.palermo.lab.i.appointment.persistence.in.memory;
 
-import edu.palermo.lab.i.appointment.persistence.AppointmentDao;
 import edu.palermo.lab.i.appointment.AppointmentDto;
+import edu.palermo.lab.i.appointment.persistence.AppointmentDao;
 import edu.palermo.lab.i.user.UserDto;
 import lombok.NonNull;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class InMemoryAppointmentDao implements AppointmentDao {
 
+  private final AtomicLong idCounter = new AtomicLong();
   private final List<AppointmentDto> appointments = new LinkedList<>();
 
   @Override
   public void save(final @NonNull AppointmentDto appointment) {
+    Long id = idCounter.getAndAdd(1L);
+    appointment.setId(id.toString());
     Optional<AppointmentDto> potentialExistingAppointment = appointments.stream()
         .filter(savedAppointment -> savedAppointment.getId().equals(appointment.getId()))
         .findFirst();
@@ -48,7 +52,7 @@ public class InMemoryAppointmentDao implements AppointmentDao {
         .filter(appointment -> appointment.getDoctorId().equals(doctor.getId()) && !appointment.getCanceled())
         .filter(appointment -> {
           Instant instant = Instant.ofEpochMilli(appointment.getTimestamp());
-          LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+          LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
           return localDateTime.getDayOfYear() == localDate.getDayOfYear();
         })
         .map(AppointmentDto::copy)
@@ -56,9 +60,10 @@ public class InMemoryAppointmentDao implements AppointmentDao {
   }
 
   @Override
-  public List<AppointmentDto> getPatientsAppoints(final @NonNull String patientId) {
+  public List<AppointmentDto> getPatientsAppointments(final @NonNull String patientId) {
     return appointments.stream()
         .filter(appointment -> appointment.getPatientId().equals(patientId) && !appointment.getCanceled())
+        .filter(appointment -> System.currentTimeMillis() <= appointment.getTimestamp())
         .map(AppointmentDto::copy)
         .collect(Collectors.toList());
   }

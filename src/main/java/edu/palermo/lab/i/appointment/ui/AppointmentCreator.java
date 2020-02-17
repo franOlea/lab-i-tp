@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,7 @@ public class AppointmentCreator extends ManagedPanel {
         localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY)));
 
     TimePickerSettings timePickerSettings = new TimePickerSettings();
+    timePickerSettings.use24HourClockFormat();
     TimePicker timePicker = new TimePicker(timePickerSettings);
     timePickerSettings.generatePotentialMenuTimes(
         TimePickerSettings.TimeIncrement.OneHour, LocalTime.of(9, 0), LocalTime.of(18, 0));
@@ -70,7 +72,8 @@ public class AppointmentCreator extends ManagedPanel {
           .stream()
           .map(appointment -> {
             Instant instant = Instant.ofEpochMilli(appointment.getTimestamp());
-            return instant.get(HOUR_OF_DAY);
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+            return localDateTime.getHour();
           })
           .collect(Collectors.toList());
       timePickerSettings.setVetoPolicy(
@@ -125,8 +128,9 @@ public class AppointmentCreator extends ManagedPanel {
     if(doctor == null || date == null || time == null) {
       return Optional.empty();
     }
-    long timestamp = LocalDateTime.of(date, time)
-        .toInstant(ZoneOffset.UTC)
+    Instant instant = LocalDateTime.of(date, time)
+        .toInstant(ZoneOffset.UTC);
+    long timestamp = instant
         .toEpochMilli();
     UserDto patient = SecurityContext.getInstance().getCurrentUser();
     AppointmentDto dto = new AppointmentDto();

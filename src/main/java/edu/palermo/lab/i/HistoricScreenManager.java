@@ -42,7 +42,7 @@ public class HistoricScreenManager implements ScreenManager {
       if(currentUserRole == ADMIN) {
         switchTo(managedPanelFactory.createUserManager(this));
       } else if(currentUserRole == USER) {
-        switchTo(managedPanelFactory.createUserLogin(this));
+        switchTo(managedPanelFactory.createAppointmentManager(this));
       } else if(currentUserRole == DOCTOR) {
         switchTo(managedPanelFactory.createUserLogin(this));
       } else {
