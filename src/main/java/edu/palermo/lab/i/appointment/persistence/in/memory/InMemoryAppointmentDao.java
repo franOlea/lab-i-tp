@@ -23,7 +23,7 @@ public class InMemoryAppointmentDao implements AppointmentDao {
   @Override
   public void save(final @NonNull AppointmentDto appointment) {
     Long id = idCounter.getAndAdd(1L);
-    appointment.setId(id.toString());
+    appointment.setId(id);
     Optional<AppointmentDto> potentialExistingAppointment = appointments.stream()
         .filter(savedAppointment -> savedAppointment.getId().equals(appointment.getId()))
         .findFirst();
@@ -36,6 +36,14 @@ public class InMemoryAppointmentDao implements AppointmentDao {
     } else {
       appointments.add(appointment);
     }
+  }
+
+  @Override
+  public void cancel(final @NonNull Long appointmentId) {
+    appointments.stream()
+        .filter(savedAppointment -> savedAppointment.getId().equals(appointmentId))
+        .findFirst()
+        .ifPresent(appointment -> appointment.setCanceled(true));
   }
 
   @Override
@@ -54,6 +62,22 @@ public class InMemoryAppointmentDao implements AppointmentDao {
           Instant instant = Instant.ofEpochMilli(appointment.getTimestamp());
           LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
           return localDateTime.getDayOfYear() == localDate.getDayOfYear();
+        })
+        .map(AppointmentDto::copy)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<AppointmentDto> getDoctorsAppointments(final @NonNull UserDto doctor,
+                                                     final @NonNull LocalDate from,
+                                                     final @NonNull LocalDate to) {
+    return appointments.stream()
+        .filter(appointment -> appointment.getDoctorId().equals(doctor.getId()) && !appointment.getCanceled())
+        .filter(appointment -> {
+          Instant instant = Instant.ofEpochMilli(appointment.getTimestamp());
+          LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+          return localDateTime.getDayOfYear() >= from.getDayOfYear()
+              && localDateTime.getDayOfYear() < to.getDayOfYear();
         })
         .map(AppointmentDto::copy)
         .collect(Collectors.toList());

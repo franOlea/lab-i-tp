@@ -1,5 +1,6 @@
 package edu.palermo.lab.i;
 
+import edu.palermo.lab.i.ui.components.MenuBar;
 import edu.palermo.lab.i.user.Role;
 import edu.palermo.lab.i.user.UserDto;
 import lombok.NonNull;
@@ -24,6 +25,14 @@ public class HistoricScreenManager implements ScreenManager {
   private Deque<ManagedPanel> previousPanels = new ArrayDeque<>(MAX_SIZE);
 
   @Override
+  public void initialize() {
+    MenuBar menubar = new MenuBar(this);
+    menubar.initialize();
+    frame.setJMenuBar(menubar);
+    frame.setVisible(true);
+  }
+
+  @Override
   public void switchTo(@NonNull final ManagedPanel panel) {
     if(previousPanels.size() >= MAX_SIZE) {
       previousPanels.removeFirst();
@@ -44,7 +53,7 @@ public class HistoricScreenManager implements ScreenManager {
       } else if(currentUserRole == USER) {
         switchTo(managedPanelFactory.createAppointmentManager(this));
       } else if(currentUserRole == DOCTOR) {
-        switchTo(managedPanelFactory.createUserLogin(this));
+        switchTo(managedPanelFactory.createAppointmentManager(this));
       } else {
         throw new IllegalStateException(String.format("There's an illegal role [%s] for the user.", currentUserRole));
       }

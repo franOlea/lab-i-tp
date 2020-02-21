@@ -1,8 +1,8 @@
 package edu.palermo.lab.i;
 
 import edu.palermo.lab.i.appointment.persistence.AppointmentDao;
-import edu.palermo.lab.i.appointment.persistence.in.memory.InMemoryAppointmentDao;
-import edu.palermo.lab.i.appointment.ui.AppointmentCreator;
+import edu.palermo.lab.i.appointment.persistence.h2.H2AppointmentDao;
+import edu.palermo.lab.i.appointment.persistence.h2.H2AppointmentMapper;
 import edu.palermo.lab.i.h2.H2ConnectionFactory;
 import edu.palermo.lab.i.h2.H2DBInitializer;
 import edu.palermo.lab.i.user.Role;
@@ -23,26 +23,18 @@ public class Main {
     Connection connection = h2ConnectionFactory.create();
     initializeH2Tables(connection);
     UserDao userDao = new H2UserDao(connection, new H2UserMapper());
-    AppointmentDao appointmentDao = new InMemoryAppointmentDao();
+    AppointmentDao appointmentDao = new H2AppointmentDao(connection, new H2AppointmentMapper());
     initializeUsers(userDao);
     JFrame frame = createFrame();
     ManagedPanelFactory managedPanelFactory = new ManagedPanelFactory(userDao, appointmentDao);
     ScreenManager screenManager = new HistoricScreenManager(managedPanelFactory, frame);
-    UserDto userDto = new UserDto();
-    userDto.setPassword("user");
-    userDto.setFirstName("Juan");
-    userDto.setLastName("Perez");
-    userDto.setId("user");
-    userDto.setRole(Role.USER);
-    SecurityContext.getInstance().setCurrentUser(userDto);
+    screenManager.initialize();
     screenManager.switchToDefault();
-//    screenManager.switchTo(new AppointmentCreator(screenManager, new InMemoryAppointmentDao(), userDao));
   }
 
   private static JFrame createFrame() {
     JFrame frame = new JFrame("Turnera Medica");
     frame.pack();
-    frame.setVisible(true);
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.setBounds(100, 100, 500, 500);
     return frame;
@@ -51,8 +43,8 @@ public class Main {
   private static void initializeUsers(final UserDao userDao) {
     UserDto userDto = new UserDto();
     userDto.setPassword("user");
-    userDto.setFirstName("Juan");
-    userDto.setLastName("Perez");
+    userDto.setFirstName("Esteban");
+    userDto.setLastName("Quito");
     userDto.setId("user");
     userDto.setRole(Role.USER);
     UserDto adminDto = new UserDto();

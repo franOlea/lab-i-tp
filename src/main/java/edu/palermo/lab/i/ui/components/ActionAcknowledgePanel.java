@@ -1,15 +1,14 @@
 package edu.palermo.lab.i.ui.components;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-@AllArgsConstructor
 @RequiredArgsConstructor
 public class ActionAcknowledgePanel extends JPanel {
 
@@ -17,6 +16,7 @@ public class ActionAcknowledgePanel extends JPanel {
   private JButton acceptButton;
   @Getter
   private JButton cancelButton;
+  @Setter
   @NonNull
   private String acceptLabel = "Aceptar";
   @NonNull
@@ -29,11 +29,11 @@ public class ActionAcknowledgePanel extends JPanel {
   public void initialize() {
     this.setLayout(new GridLayout(1,2));
 
-    acceptButton = new JButton("Aceptar");
+    acceptButton = new JButton(acceptLabel);
     acceptButton.addActionListener(acceptListener);
     this.add(acceptButton);
 
-    cancelButton = new JButton("Cancelar");
+    cancelButton = new JButton(cancelLabel);
     cancelButton.addActionListener(cancelListener);
     this.add(cancelButton);
   }

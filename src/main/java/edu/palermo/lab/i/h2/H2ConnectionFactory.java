@@ -7,10 +7,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class H2ConnectionFactory implements ConnectionFactory {
+public class  H2ConnectionFactory implements ConnectionFactory {
 
 	private static final String DB_DRIVER = "org.h2.Driver";
-	private static final String DB_BASE_URL = "jdbc:h2:mem:;MODE=MySQL";
+	private static final String DB_BASE_URL = "jdbc:h2:file:./test;MODE=MySQL;";
 	private static final String DB_USERNAME = "sa";
 	private static final String DB_PASS = "";
 

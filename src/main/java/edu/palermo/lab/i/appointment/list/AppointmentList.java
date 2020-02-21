@@ -6,6 +6,9 @@ import edu.palermo.lab.i.SecurityContext;
 import edu.palermo.lab.i.appointment.AppointmentDto;
 import edu.palermo.lab.i.appointment.persistence.AppointmentDao;
 import edu.palermo.lab.i.appointment.ui.AppointmentCreator;
+import edu.palermo.lab.i.appointment.ui.DoctorReportGenerator;
+import edu.palermo.lab.i.user.Role;
+import edu.palermo.lab.i.user.UserDto;
 import edu.palermo.lab.i.user.persistence.UserDao;
 import lombok.NonNull;
 
@@ -37,18 +40,26 @@ public class AppointmentList extends ManagedPanel {
   protected void doInitialize() {
     this.setLayout(new GridLayout(1, 2));
     appointments.clear();
-    String currentUserId = SecurityContext.getInstance().getCurrentUser().getId();
-    appointments.addAll(appointmentDao.getPatientsAppointments(currentUserId));
+    UserDto currentUser = SecurityContext.getInstance().getCurrentUser();
+    this.appointments.addAll(currentUser.getRole() == Role.DOCTOR
+        ? appointmentDao.getDoctorsAppointments(currentUser)
+        : appointmentDao.getPatientsAppointments(currentUser.getId()));
 
-    AppointmentTableModel tableModel = new AppointmentTableModel(appointments, userDao);
+    AppointmentTableModel tableModel = new AppointmentTableModel(this.appointments, userDao);
 
     JPanel buttons = new JPanel();
-    buttons.setLayout(new GridLayout(2, 1));
-    JButton createButton = new JButton("Crear");
-    createButton.addActionListener(createButtonClickListener());
+    buttons.setLayout(new GridLayout(3, 1));
+    if(currentUser.getRole() == Role.DOCTOR) {
+      JButton report = new JButton("Reporte");
+      report.addActionListener(reportButtonClickListener());
+      buttons.add(report);
+    } else {
+      JButton createButton = new JButton("Crear");
+      createButton.addActionListener(createButtonClickListener());
+      buttons.add(createButton);
+    }
     JButton cancelButton = new JButton("Cancelar");
     cancelButton.setEnabled(false);
-    buttons.add(createButton);
     buttons.add(cancelButton);
 
     JTable table = new JTable(tableModel);
@@ -70,6 +81,7 @@ public class AppointmentList extends ManagedPanel {
         int row = table.getSelectedRow();
         AppointmentDto appointment = appointments.remove(row);
         appointment.setCanceled(true);
+        appointmentDao.cancel(appointment.getId());
         table.repaint();
       }
     };
@@ -82,6 +94,11 @@ public class AppointmentList extends ManagedPanel {
   private ActionListener createButtonClickListener() {
     return event -> screenManager
         .switchTo(new AppointmentCreator(screenManager, appointmentDao, userDao));
+  }
+
+  private ActionListener reportButtonClickListener() {
+    return event -> screenManager
+        .switchTo(new DoctorReportGenerator(screenManager, appointmentDao));
   }
 
 

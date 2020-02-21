@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AppointmentDto {
 
-  private String id;
+  private Long id;
   private String doctorId;
   private String patientId;
   private Long timestamp;
@@ -27,7 +27,7 @@ public class AppointmentDto {
   public AppointmentDto copy() {
     //noinspection BoxingBoxedValue
     return new AppointmentDto(
-        id, doctorId, patientId, Long.valueOf(timestamp), Boolean.valueOf(canceled));
+        Long.valueOf(id), doctorId, patientId, Long.valueOf(timestamp), Boolean.valueOf(canceled));
   }
 
 }
